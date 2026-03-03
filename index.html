@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Clock — Lifetimes Across 61 Orders</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070e; --gold:#c8a96e; --golddim:#6a5830; --goldfaint:#1a1506;
+  --cyan:#4fc3c8; --rose:#e05c7a; --green:#7eb87e; --purple:#9b7eb8;
+  --text:#ddd8c8; --textdim:#5a5448;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'EB Garamond',Georgia,serif;
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:24px 12px 60px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(200,169,110,0.05) 1px,transparent 1px);
+  background-size:55px 55px;pointer-events:none;z-index:0;
+}
+header{text-align:center;margin-bottom:14px;position:relative;z-index:1;max-width:820px;width:100%;}
+.kicker{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#e8354a;margin-bottom:7px;}
+h1{font-size:clamp(22px,4vw,34px);font-weight:400;line-height:1.15;margin-bottom:4px;}
+h1 em{font-style:italic;color:var(--gold);}
+.lede{font-size:13px;color:#9a9080;line-height:1.65;font-style:italic;}
+
+.planck-box{
+  position:relative;z-index:1;max-width:820px;width:100%;
+  border:1px solid var(--golddim);border-left:3px solid var(--gold);
+  background:rgba(200,169,110,0.03);padding:13px 18px;margin-bottom:16px;
+}
+.planck-box h2{font-size:13px;font-weight:600;color:var(--gold);margin-bottom:6px;}
+.planck-box p{font-size:12px;line-height:1.72;color:#9a9080;margin-bottom:5px;}
+.planck-box p:last-child{margin-bottom:0;}
+.planck-box .eq{
+  font-family:'Space Mono',monospace;font-size:9.5px;color:var(--cyan);
+  background:rgba(0,0,0,0.35);padding:5px 10px;margin:5px 0;display:block;
+  border-left:2px solid var(--cyan);line-height:1.9;
+}
+.planck-box em{color:var(--gold);font-style:italic;}
+.planck-box strong{color:var(--text);}
+
+.clock-wrap{position:relative;z-index:1;width:100%;max-width:860px;display:flex;justify-content:center;}
+#clock-svg{display:block;}
+
+.card-grid{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:7px;width:100%;max-width:860px;margin-top:10px;
+}
+.grp-label{
+  font-family:'Space Mono',monospace;font-size:7.5px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--textdim);padding:3px 0 2px;
+  grid-column:1/-1;border-bottom:1px solid #141422;margin-top:4px;
+}
+.ecard{
+  border-left:2px solid var(--golddim);padding:6px 10px;cursor:pointer;
+  transition:all 0.15s;border-radius:0 2px 2px 0;
+}
+.ecard:hover,.ecard.active{border-left-color:var(--gold);background:rgba(200,169,110,0.06);}
+.ecard .en{font-size:13px;font-weight:600;margin-bottom:1px;}
+.ecard .et{font-family:'Space Mono',monospace;font-size:8px;color:var(--cyan);margin-bottom:1px;}
+.ecard .ep{font-family:'Space Mono',monospace;font-size:7px;color:var(--textdim);margin-bottom:3px;}
+.ecard .ed{font-size:11.5px;line-height:1.46;color:#706860;font-style:italic;}
+.ecard.active .ed{color:#aaa090;}
+
+.prose{
+  max-width:820px;width:100%;margin-top:20px;position:relative;z-index:1;
+  font-size:13.5px;line-height:1.82;color:#8a8278;
+  border-top:1px solid #181828;padding-top:14px;
+}
+.prose p{margin-bottom:9px;}
+.prose em{color:var(--gold);font-style:italic;}
+.prose strong{color:var(--text);}
+.prose .mono{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--cyan);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Gauging a Lifetime on Skid Rho</div>
+  <h1>A Clock of <em>61 Orders</em> of Magnitude</h1>
+  <p class="lede">Lifetimes of particles and their aggregates. One revolution = 61 orders of magnitude — the Sun closes the circle just before 12.</p>
+</header>
+
+<div class="planck-box">
+  <h2>Why Planck Time?</h2>
+  <p>Three fundamental constants — <em>ħ</em> (quantum of action), <em>G</em> (gravity), <em>c</em> (light speed) — yield the unique combination with units of time:</p>
+  <span class="eq">t_P = √(ħG/c⁵) = √([kg·m²s⁻¹][m³kg⁻¹s⁻²]/[ms⁻¹]⁵) = √(s²) ✓  ≈  5.39×10⁻⁴⁴ s</span>
+  <p>The universe is <em>~10⁶¹</em> × 5.4×10⁻⁴⁴ s old. A clock with one tick per order gives exactly <strong>61 positions</strong>, far more natural than an arbitrary speedometer axis.</p>
+</div>
+
+<div class="clock-wrap">
+  <svg id="clock-svg" width="860" height="860" viewBox="-430 -430 860 860"></svg>
+</div>
+
+<div class="card-grid" id="card-grid"></div>
+
+<div class="prose">
+  <p>The mesons span <strong>sixteen orders of magnitude</strong> from the <em>ρ meson</em> at <span class="mono">4.4×10⁻²⁴ s</span> (~4 o'clock) to the <em>π pion</em> at <span class="mono">2.6×10⁻⁸ s</span> (~7 o'clock).
+  Reduce the possible channels of your demise and you live longer.</p>
+
+  <p>The universe is approximately 10⁶¹ × 5.4×10⁻⁴⁴ s old.
+  A clock face with one tick per order of magnitude gives exactly <strong>61 positions</strong>, far more natural than a speedometer with an arbitrary axis.</p>
+
+  <p>Aggregated cellular matter in human form is nearly <strong>33 orders of magnitude</strong> less ephemeral than a rho meson.
+  If you eat photons either second or third hand in bulk you can live longer than your mass alone suggests.
+  The Sun operates on something close to nuclear ketosis — fusing hydrogen directly into helium with almost no metabolic overhead.
+  Humans do not. We pay a heavy thermodynamic tax at every trophic level, which is perhaps why we sit a modest two orders of magnitude above a rat.</p>
+
+  <p>The Sun's main-sequence lifetime at ~10<sup>17.5</sup> s nearly closes the full revolution.
+  The most enduring ordinary object, it sits at 11.9 o'clock, just shy of where Planck time began.</p>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const svg=document.getElementById('clock-svg');
+// 61 orders: Planck at 12, Sun at 11.9 o'clock (just before 12, nearly full circle)
+const CSTART=-43, RANGE=61, R=270;
+
+function polar(r,a){return[r*Math.cos(a),r*Math.sin(a)];}
+function l2a(logT){return((logT-CSTART)/RANGE)*2*Math.PI - Math.PI/2;}
+function el(tag,a={},par=svg){
+  const e=document.createElementNS(NS,tag);
+  for(const[k,v]of Object.entries(a))e.setAttribute(k,v);
+  if(par)par.appendChild(e);return e;
+}
+function tx(s,a={},par=svg){const e=el('text',a,par);e.textContent=s;return e;}
+
+// ── ENTITIES ─────────────────────────────────────────────────────────────────
+// side:'out' = label outside ring   side:'in' = label inside ring
+// lR = radial distance of label text anchor from centre
+// dA = angular nudge of label (radians)
+// showT = show timescale line
+
+const E=[
+  // ~12 o'clock — Planck nudged RIGHT (clockwise +dA), Sun nudged LEFT (anticlockwise -dA)
+  {grp:'Quantum',
+   name:'Planck time',   log:-43.27, t:'5.4×10⁻⁴⁴ s', rho:'1 (basis)',
+   color:'#c8a96e', side:'in', lR:R-90, dA:+0.18, showT:true,
+   desc:'Built from ħ, G, c alone — the quantum gravity floor. Clock origin at 12 o\'clock.'},
+
+  // ~3-4 o'clock — Z boson inside, rho outside
+  {grp:'Quantum',
+   name:'Z boson',       log:-24.52, t:'3×10⁻²⁵ s',   rho:'~3×10¹⁸ ρ',
+   color:'#e05c7a', side:'in', lR:R-60, dA: 0.08, showT:true,
+   desc:'Weak-force mediator — barely time for light to cross a proton.'},
+
+  {grp:'Quantum',
+   name:'ρ meson',       log:-23.36, t:'4.4×10⁻²⁴ s', rho:'1 ρ (anchor)',
+   color:'#e05c7a', side:'out', lR:R+32, dA:-0.09, showT:true,
+   desc:'Our timescale anchor — matter-antimatter quark pair decaying via strong force.'},
+
+  // ~7 o'clock — pion outside, muon inside
+  {grp:'Quantum',
+   name:'π pion',        log:-7.59,  t:'2.6×10⁻⁸ s',  rho:'~6×10¹⁵ ρ',
+   color:'#e05c7a', side:'out', lR:R+32, dA: 0.0, showT:true,
+   desc:'16 orders longer than the rho — fewer open decay channels (OZI rule).'},
+
+  {grp:'Quantum',
+   name:'Muon',          log:-5.66,  t:'2.2×10⁻⁶ s',  rho:'~2×10¹⁷ ρ',
+   color:'#e05c7a', side:'in', lR:R-55, dA: 0.0, showT:true,
+   desc:'Time-dilation lets cosmic-ray muons reach sea level — special relativity live.'},
+
+  // ~9 o'clock — neutron inside, mayfly outside
+  {grp:'Nuclear',
+   name:'Free neutron',  log:2.94,   t:'880 s (~15 min)', rho:'~2×10²⁶ ρ',
+   color:'#4fc3c8', side:'in', lR:R-55, dA: 0.0, showT:true,
+   desc:'Beta-decays in isolation. Nuclear binding confers near-immortality.'},
+
+  {grp:'Biology',
+   name:'Mayfly / Virus', log:4.94,  t:'~86,400 s (1 day)', rho:'~2×10²⁸ ρ',
+   color:'#c8a96e', side:'out', lR:R+32, dA: 0.0, showT:true,
+   desc:'A mayfly adult and a coronavirus on cardboard both survive ~one day.'},
+
+  // ~10 o'clock — rat inside, human outside
+  {grp:'Biology',
+   name:'Sunda Rat',     log:7.50,   t:'~π×10⁷ s (1 yr)', rho:'~7×10³⁰ ρ',
+   color:'#c8a96e', side:'in', lR:R-55, dA: 0.0, showT:true,
+   desc:'π×10⁷ s per year — Muller\'s Giant Sunda Rat as our biological yardstick.'},
+
+  {grp:'Biology',
+   name:'Human',         log:9.40,   t:'~2×10⁹ s (80 yr)', rho:'~6×10³² ρ',
+   color:'#c8a96e', side:'out', lR:R+32, dA: 0.0, showT:true,
+   desc:'33 orders of magnitude less ephemeral than a rho meson.'},
+
+  // ~11.9 o'clock — Sun nudged LEFT (anticlockwise -dA) to fan away from Planck
+  {grp:'Stellar',
+   name:'Sun (main seq.)', log:17.50, t:'~π×10¹⁷ s (10 Gyr)', rho:'~3×10⁶⁰ ρ',
+   color:'#7eb87e', side:'in', lR:R-140, dA:-0.18, showT:true,
+   desc:'The Sun\'s main-sequence lifetime sits at 11.9 o\'clock — nearly closing the 61-order circle.'},
+];
+
+// ── SVG DEFS ─────────────────────────────────────────────────────────────────
+const defs=el('defs');
+const rg=el('radialGradient',{id:'fg',cx:'50%',cy:'50%',r:'50%'},defs);
+el('stop',{offset:'0%','stop-color':'#111220'},rg);
+el('stop',{offset:'100%','stop-color':'#060710'},rg);
+const gf=el('filter',{id:'glow',x:'-80%',y:'-80%',width:'260%',height:'260%'},defs);
+el('feGaussianBlur',{stdDeviation:'5',result:'b'},gf);
+const gfm=el('feMerge',{},gf);
+el('feMergeNode',{in:'b'},gfm);el('feMergeNode',{in:'SourceGraphic'},gfm);
+
+// ── FACE ─────────────────────────────────────────────────────────────────────
+el('circle',{cx:0,cy:0,r:R+38,fill:'#04040c',stroke:'#0e0e20','stroke-width':'1.5'});
+el('circle',{cx:0,cy:0,r:R+15,fill:'none',stroke:'#c8a96e','stroke-width':'0.8',opacity:'0.22'});
+el('circle',{cx:0,cy:0,r:R,fill:'url(#fg)'});
+// inner guide rings at inside-label radii
+[R-65, R-75, R-85].forEach(r=>
+  el('circle',{cx:0,cy:0,r,fill:'none',stroke:'#c8a96e',
+    'stroke-width':'0.2',opacity:'0.04','stroke-dasharray':'3 12'}));
+
+// ── 61 TICKS ─────────────────────────────────────────────────────────────────
+for(let i=0;i<=61;i++){
+  const a=l2a(CSTART+i);
+  const maj=i%5===0;
+  const[x1,y1]=polar(R,a),[x2,y2]=polar(maj?R-22:R-9,a);
+  el('line',{x1,y1,x2,y2,stroke:maj?'#c8a96e':'#1c1c36',
+    'stroke-width':maj?'1.6':'0.6',opacity:maj?'0.62':'0.45'});
+  // suppress exponent labels within 3 ticks of 12 o'clock (i<=3 or i>=58)
+  // to keep the Planck/Sun label zone clear
+  if(maj && i>3 && i<58){
+    const[lx,ly]=polar(R-34,a);
+    tx(`${CSTART+i}`,{x:lx,y:ly,'text-anchor':'middle','dominant-baseline':'middle',
+      'font-family':'Space Mono,monospace','font-size':'8.5',fill:'#36301a',opacity:'0.88'});
+  }
+}
+
+// ── COLOUR ARC BANDS ─────────────────────────────────────────────────────────
+const BANDS=[
+  {r:[-43,-14], c:'#e05c7a', lb:'Quantum / Particle'},
+  {r:[-14,  2], c:'#4fc3c8', lb:'Nuclear'},
+  {r:[  2, 13], c:'#c8a96e', lb:'Biology'},
+  {r:[ 13,17.6],c:'#7eb87e', lb:'Stellar'},
+];
+BANDS.forEach(b=>{
+  const a1=l2a(b.r[0]),a2=l2a(b.r[1]);
+  const lg=(a2-a1>Math.PI)?1:0, rA=R-6;
+  const[x1,y1]=polar(rA,a1),[x2,y2]=polar(rA,a2);
+  el('path',{d:`M${x1} ${y1} A${rA} ${rA} 0 ${lg} 1 ${x2} ${y2}`,
+    fill:'none',stroke:b.c,'stroke-width':'7',opacity:'0.30'});
+  const amid=(a1+a2)/2;
+  const[blx,bly]=polar(R-22,amid);
+  const rot=((amid+Math.PI/2)*180/Math.PI);
+  tx(b.lb,{x:blx,y:bly,'text-anchor':'middle','dominant-baseline':'middle',
+    'font-family':'EB Garamond,serif','font-size':'10',fill:b.c,opacity:'0.38',
+    transform:`rotate(${rot},${blx},${bly})`});
+});
+
+// ── CENTRE DISC ───────────────────────────────────────────────────────────────
+const CR=100;
+el('circle',{cx:0,cy:0,r:CR,fill:'#04040a',stroke:'#181828','stroke-width':'0.8'});
+tx('61',{x:0,y:-30,'text-anchor':'middle',
+  'font-family':'EB Garamond,serif','font-size':'34','font-weight':'600',fill:'#c8a96e'});
+tx('orders of magnitude',{x:0,y:-8,'text-anchor':'middle',
+  'font-family':'Space Mono,monospace','font-size':'6.5',fill:'#6a5830','letter-spacing':'1.5'});
+tx('particle lifetimes',{x:0,y:5,'text-anchor':'middle',
+  'font-family':'Space Mono,monospace','font-size':'6',fill:'#3a3020','letter-spacing':'1'});
+el('line',{x1:-62,y1:16,x2:62,y2:16,stroke:'#22180a','stroke-width':'0.5'});
+tx('12 o\'clock = t_P = √(ħG/c⁵)',{x:0,y:28,'text-anchor':'middle',
+  'font-family':'EB Garamond,serif','font-size':'7.5',fill:'#c8a96e',opacity:'0.45','font-style':'italic'});
+tx('≈ 5.4×10⁻⁴⁴ s',{x:0,y:40,'text-anchor':'middle',
+  'font-family':'Space Mono,monospace','font-size':'7',fill:'#5a4820',opacity:'0.6'});
+tx('1 tick = 1 order of magnitude',{x:0,y:52,'text-anchor':'middle',
+  'font-family':'Space Mono,monospace','font-size':'5.5',fill:'#3a2e18',opacity:'0.5'});
+tx('Sun closes loop at 11.9 o\'clock ↺',{x:0,y:64,'text-anchor':'middle',
+  'font-family':'Space Mono,monospace','font-size':'5.5',fill:'#4a6838',opacity:'0.55'});
+tx('Universe ≈ 10⁶¹ t_P  (just off-face)',{x:0,y:76,'text-anchor':'middle',
+  'font-family':'Space Mono,monospace','font-size':'5',fill:'#3a2e18',opacity:'0.45'});
+
+// ── MARKER PLACEMENT ──────────────────────────────────────────────────────────
+const markerMap={};
+
+function placeMarker(e){
+  const ang=l2a(e.log);
+  const dA=e.dA||0;
+  const labelAng=ang+dA;
+  const isIn=e.side==='in';
+  const lR=e.lR;
+  const[mx,my]=polar(R,ang);
+  const[lx,ly]=polar(lR,labelAng);
+
+  // text anchor — same rule for both inside and outside:
+  // if label is in the right half (cos>0), text extends rightward -> anchor=start
+  // if label is in the left half (cos<0), text extends leftward -> anchor=end
+  const cosA=Math.cos(labelAng);
+  const anchor = cosA>0 ? 'start' : 'end';
+  const xOff   = cosA>0 ?  7     : -7;
+
+  const g=el('g',{cursor:'pointer'});
+
+  // spoke
+  if(isIn){
+    const[s1x,s1y]=polar(R-8,ang);
+    const[s2x,s2y]=polar(lR+16,labelAng);
+    el('line',{x1:s1x,y1:s1y,x2:s2x,y2:s2y,
+      stroke:e.color,'stroke-width':'0.8',opacity:'0.32','stroke-dasharray':'3 4'},g);
+  } else {
+    const[s1x,s1y]=polar(R+8,ang);
+    const[s2x,s2y]=polar(lR-16,labelAng);
+    el('line',{x1:s1x,y1:s1y,x2:s2x,y2:s2y,
+      stroke:e.color,'stroke-width':'0.8',opacity:'0.32','stroke-dasharray':'3 4'},g);
+  }
+
+  // glow + dot
+  el('circle',{cx:mx,cy:my,r:11,fill:e.color,opacity:'0.08',filter:'url(#glow)'},g);
+  const dot=el('circle',{cx:mx,cy:my,r:6,fill:e.color,
+    stroke:'#07070e','stroke-width':'1.4',opacity:'0.95'},g);
+
+  // name
+  tx(e.name,{
+    x:lx+xOff, y:ly-(e.showT?8:0),
+    'text-anchor':anchor,'dominant-baseline':'middle',
+    'font-family':'EB Garamond,serif','font-size':'14','font-weight':'600',
+    fill:e.color,opacity:'0.95',cursor:'pointer'
+  },g);
+
+  // timescale
+  if(e.showT){
+    tx(e.t,{
+      x:lx+xOff, y:ly+9,
+      'text-anchor':anchor,'dominant-baseline':'middle',
+      'font-family':'Space Mono,monospace','font-size':'8.5',
+      fill:'#4a5a6a',opacity:'0.85'
+    },g);
+  }
+
+  svg.appendChild(g);
+  markerMap[e.name]={g,dot};
+  g.addEventListener('mouseenter',()=>activate(e.name));
+  g.addEventListener('click',()=>activate(e.name));
+}
+
+E.forEach(placeMarker);
+
+// ── CARD GRID ─────────────────────────────────────────────────────────────────
+const grid=document.getElementById('card-grid');
+[...new Set(E.map(e=>e.grp))].forEach(grp=>{
+  const lbl=document.createElement('div');
+  lbl.className='grp-label';lbl.textContent=grp;
+  grid.appendChild(lbl);
+  E.filter(e=>e.grp===grp).forEach(e=>{
+    const c=document.createElement('div');
+    c.className='ecard';c.dataset.name=e.name;
+    c.innerHTML=`<div class="en" style="color:${e.color}">${e.name}</div>
+      <div class="et">${e.t}</div>
+      <div class="ep">≈ ${e.rho} lifetimes</div>
+      <div class="ed">${e.desc}</div>`;
+    c.addEventListener('click',()=>activate(e.name));
+    grid.appendChild(c);
+  });
+});
+
+// ── ACTIVATE ──────────────────────────────────────────────────────────────────
+let cur=null;
+function activate(name){
+  if(cur){
+    const pm=markerMap[cur];
+    if(pm)pm.dot.setAttribute('r','6');
+    document.querySelectorAll(`.ecard[data-name="${CSS.escape(cur)}"]`)
+      .forEach(c=>c.classList.remove('active'));
+  }
+  cur=name;
+  const m=markerMap[name];
+  if(m){m.dot.setAttribute('r','10');m.dot.setAttribute('opacity','1');}
+  document.querySelectorAll(`.ecard[data-name="${CSS.escape(name)}"]`)
+    .forEach(c=>{c.classList.add('active');c.scrollIntoView({behavior:'smooth',block:'nearest'});});
+}
+
+setTimeout(()=>activate('ρ meson'),400);
+</script>
+</body>
+</html>
